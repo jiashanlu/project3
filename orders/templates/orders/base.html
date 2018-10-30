@@ -2,15 +2,33 @@
 
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>{% block title %}{% endblock %}</title>
-        <link rel="icon" href="data:;base64,=">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-        <script type="text/javascript" src="{% static 'orders/orders.js' %}"></script>
-        <link rel="stylesheet" href="{% static 'orders/styles.css' %}"/>
-    </head>
-    <body>
+  <head>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="icon" href="data:;base64,=">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <script type="text/javascript" src="{% static 'orders/orders.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'orders/styles.css' %}"/>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand navbar-light bg-light sticky-top">
+      <a class="navbar-brand" href="#">Jiashan Pizza</a>
+        <div class="navbar-nav">
+          <a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+          <a class="nav-item nav-link" href="#">Features</a>
+          <a class="nav-item nav-link" href="#">Pricing</a>
+          <a class="nav-item nav-link disabled" href="#">Disabled</a>
+        </div>
+        {% if not user.is_authenticated %}
+        <form class="form-inline ml-auto">
+          <a class="btn btn-sm btn-outline-primary" href="{% url 'login' %}" type="button">Login</a>
+          <a class="btn btn-sm btn-outline-secondary" href="{% url 'register' %}" type="button">Register</a>
+        </form>
+        {% else %}
+         <p class="form-inline ml-auto"> {{ user.username }} is logged in </p>
+         <a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}" type="button">Exit</a>
+        {% endif %}
+    </nav>
         {% block body %}
         {% endblock %}
     </body>
