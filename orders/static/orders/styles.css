@@ -4,3 +4,26 @@
 .instructions{
   text-align: center;
 }
+.Capitalize{
+  text-transform: capitalize;
+}
+.item-button{
+  text-indent: 1px;
+  display: inline-block;
+  line-height:inherit;
+  color: gray;
+}
+.topp-button{
+  text-indent: 1px;
+  display: inline-block;
+  line-height:inherit;
+  color: gray;
+}
+.margin-top{
+  margin-top: 1em;
+}
+
+#toppings{
+line-height: 1em;
+background-color: lightgray;
+}

@@ -1,0 +1,54 @@
+{% extends "orders/base.html" %}
+
+{% block title %}
+    Pizzas
+{% endblock %}
+
+{% block body %}
+<div class="container text-center">
+  <div class="row justify-content-center margin-top">
+    <div class="col-4">
+      <h2>Pizza Menu</h2>
+      <h4 class="lead">The best pizzas in N.Y.</h4>
+    </div>
+  </div>
+  <div class="row">
+{% regroup pizza by kind as kind_list %}
+{% for k in kind_list%}
+    <div class="col">
+      <p class="lead">{{k.grouper}}</p>
+    {% regroup k.list|dictsort:"type" by type as type_list %}
+      <dl class="text-center Capitalize">
+        {% for t in type_list%}
+        <dd><b>{{t.grouper}}</b>
+          <ul>
+          {% for s in t.list %}
+            <dd class="item">{{ s.size }} size<a href="#" data-order='{"ID":"{{s.id}}", "size":"{{s.size}}", "type":"{{s.type}}", "kind":"{{s.kind}}", "price":{{s.price}}}' class="fas fa-cart-plus item-button add-order">${{s.price}}</a></dd>
+          {% endfor %}
+          </ul>
+        </dd>
+        {% endfor %}
+      </dl>
+    </div>
+{% endfor %}
+    <div class="col-6">
+      <p><em>Add Toppings and confirm your Pizza!</em></p>
+      <div class="row">
+        <div class="col-4">
+          <dl class="text-center Capitalize" id="toppings">
+            {% for t in topping%}
+            <dd>{{ t.name }}<a href="#" data-order='{"ID":"{{t.id}}", "name":"{{t.name}}"}' class="fas fa-plus topp-button add-topp hide"></a></dd>
+            {% endfor %}
+          </dl>
+        </div>
+        <div class="col">
+          <p class="hide"><a id="selected-pizza"></a></p>
+          <ul class="text-left" id="selected-subb"></ul>
+          <p class="hide hide2">"Select <a id="nbr-subb"></a> topp(s)"</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

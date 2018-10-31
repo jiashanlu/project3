@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
+from .models import Pizza, Order, Topping
 
 
 # Create your views here.
@@ -40,3 +41,21 @@ def login_user(request):
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
+
+def order_view(request):
+    try:
+        order = Order.objects.all()
+    except:
+        message = "You do not have any order yet"
+
+    return render(request, "orders/order.html")
+
+def pizzas(request):
+    pizza = Pizza.objects.all()
+    topping =Topping.objects.all()
+    context = {
+    "user": request.user,
+    "pizza" : pizza,
+    "topping" : topping,
+    }
+    return render(request, "orders/pizzas.html", context)

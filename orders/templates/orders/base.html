@@ -12,12 +12,12 @@
   </head>
   <body>
     <nav class="navbar navbar-expand navbar-light bg-light sticky-top">
-      <a class="navbar-brand" href="#">Jiashan Pizza</a>
+      <a class="navbar-brand" href="{% url 'index' %}">Jiashan Pizza</a>
         <div class="navbar-nav">
-          <a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
-          <a class="nav-item nav-link" href="#">Features</a>
-          <a class="nav-item nav-link" href="#">Pricing</a>
-          <a class="nav-item nav-link disabled" href="#">Disabled</a>
+          <a class="nav-item nav-link" href="{% url 'pizzas' %}">Pizzas</a>
+          <a class="nav-item nav-link" href="#">Subs</a>
+          <a class="nav-item nav-link" href="#">Italian Food</a>
+          <a class="nav-item nav-link" href="#">For Dinner</a>
         </div>
         {% if not user.is_authenticated %}
         <form class="form-inline ml-auto">
@@ -25,8 +25,8 @@
           <a class="btn btn-sm btn-outline-secondary" href="{% url 'register' %}" type="button">Register</a>
         </form>
         {% else %}
-         <p class="form-inline ml-auto"> {{ user.username }} is logged in </p>
-         <a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}" type="button">Exit</a>
+         <a class="nav-item nav-link ml-auto" href="{% url 'order' %}">My Order</a>
+         <a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}" type="button">Logout</a>
         {% endif %}
     </nav>
         {% block body %}

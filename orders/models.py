@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 
 # Create your models here.
 class Topping (models.Model):
@@ -23,11 +25,9 @@ class Pizza(models.Model):
     type = models.CharField(max_length=64)
     size = models.CharField(max_length=5)
     price = models.DecimalField(max_digits=5, decimal_places=2)
-    toppings = models.ManyToManyField(Topping, blank=True, related_name="toppings")
-    subs = models.ManyToManyField(Sub, blank=True, related_name="sub")
 
-    def __str__(self):
-        return f"{self.type}, {self.kind}, {self.size} with {self.toppings} and {self.subs} at {self.price}"
+#    def __str__(self):
+#        return {'type':{self.type}, 'kind':{self.kind}, 'size':{self.size},'price': {self.price}}"
 
 class Pasta (models.Model):
     name = models.CharField(max_length=64)
@@ -50,3 +50,12 @@ class DinnerPlatter (models.Model):
 
     def __str__(self):
         return f"{self.name}, {self.size}, {self.price}"
+
+class Order (models.Model):
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="customer")
+    pizza = models.ManyToManyField(Pizza, blank=True, related_name="pizza")
+    topping = models.ManyToManyField(Topping, blank=True, related_name="topping")
+    sub = models.ManyToManyField(Sub, blank=True, related_name="sub")
+    pasta = models.ManyToManyField(Pasta, blank=True, related_name="pasta")
+    salad = models.ManyToManyField(Salad, blank=True, related_name="salad")
+    dinner = models.ManyToManyField(DinnerPlatter, blank=True, related_name="diner")
