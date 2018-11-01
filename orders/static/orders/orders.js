@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => { // on DOM loaded
 
 
 
-  document.querySelectorAll('.add-topp').forEach(link => {
+  //document.querySelectorAll('.add-topp').forEach(link => {
       link.onclick = () => {
         if (link.parentElement.children[0].classList.contains("fa-minus")) { //if already selected
           link.classList.replace("fa-minus", "fa-plus"); // change icon to plus
