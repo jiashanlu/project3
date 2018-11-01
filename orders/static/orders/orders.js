@@ -38,6 +38,14 @@ document.addEventListener('DOMContentLoaded', () => { // on DOM loaded
         return false;
       }
       else if (selected.selected == true){ //if click on another element
+        let a = JSON.parse(link.dataset.order);
+        selected.nbr=parseInt(a.type[0]);
+        if (orderTopp.length>selected.nbr){ // if click on element with less topp
+          for (let i=orderTopp.length;i > selected.nbr;i--) {
+            document.querySelector("#selected-subb").lastElementChild.remove();// remove the last ones
+            orderTopp.pop();//remove from list
+          }
+        }
         document.querySelectorAll('.add-order').forEach(link => {
           link.parentElement.style.backgroundColor = "";
         });
@@ -47,16 +55,18 @@ document.addEventListener('DOMContentLoaded', () => { // on DOM loaded
       let a = JSON.parse(link.dataset.order); // select number of subbs
       if (a.type[0] == "1" || a.type[0] == "2" || a.type[0] == "3"){
         selected.nbr=parseInt(a.type[0]); //nbr of subbs in variable
-        document.querySelector("#nbr-subb").innerHTML = selected.nbr; //display
-        unhide('.hide');
+        document.querySelector("#nbr-subb").innerHTML = selected.nbr-orderTopp.length; //display
+        if(selected.nbr-orderTopp.length>0)
+          unhide('.hide')
       }
       else if (a.type == "Special"){
         selected.nbr=5;//nbr of subbs in variable
-        document.querySelector("#nbr-subb").innerHTML = selected.nbr;//display
-        unhide('.hide');} //unhide
+        document.querySelector("#nbr-subb").innerHTML = selected.nbr-orderTopp.length;//display
+        if(selected.nbr-orderTopp.length>0)
+          unhide('.hide');} //unhide
       else {
         selected.nbr=0;
-        document.querySelector("#nbr-subb").innerHTML = selected.nbr; //nbr of subbs in variable
+        document.querySelector("#nbr-subb").innerHTML = selected.nbr-orderTopp.length; //nbr of subbs in variable
         hide('.hide');} //unhide
       orderPizza = JSON.parse(link.dataset.order); // convert html data in Json object
       document.querySelector("#selected-pizza").innerHTML = `<b>${orderPizza.kind}, ${orderPizza.type}, ${orderPizza.size}</b>`
@@ -82,18 +92,24 @@ document.addEventListener('DOMContentLoaded', () => { // on DOM loaded
             if (topp.name==orderTopp[i].name){
               orderTopp.splice(i,1);}
           };
+          unhide('.hide2'); // unhide instruction
+          unhide('.fa-plus'); // unhide +
           return false; //exit function
         }
-        else if (orderTopp.length > selected.nbr-1){
-          hide('.hide2')
-          return false;
-        }
-        link.classList.replace("fa-plus", "fa-minus");
+        //else if (orderTopp.length > selected.nbr-1){
+        //  hide('.hide2')
+        //  return false;
+        //}
+        link.classList.replace("fa-plus", "fa-minus"); //replace + per -
         topp = JSON.parse(link.dataset.order);
-        orderTopp.push(topp);
-        let li = document.createElement('li');
+        orderTopp.push(topp); // add topp to list of topp selected
+        let li = document.createElement('li'); // create html element
         li.innerHTML = topp.name;
-        document.querySelector("#selected-subb").append(li);
+        document.querySelector("#selected-subb").append(li); // add subb selected in html
+        if (orderTopp.length >= selected.nbr) {
+          hide('.hide2'); // If no more item to select hide the instruction
+          hide('.fa-plus'); // hide + items
+        }
         //orderList.push(orderTopp); plus tard
       };
   });
