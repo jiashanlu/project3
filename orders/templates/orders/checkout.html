@@ -1,0 +1,12 @@
+{% extends "orders/base.html" %}
+
+{% block title %}
+    Checkout
+{% endblock %}
+{% csrf_token %}
+
+
+{% block body %}
+<h4>bellow is what you have in your basket so far:</h4>
+<ul id="Checkout"></ul>
+{% endblock %}

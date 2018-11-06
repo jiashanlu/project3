@@ -5,9 +5,11 @@
   <head>
     <title>{% block title %}{% endblock %}</title>
     <link rel="icon" href="data:;base64,=">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
     <script type="text/javascript" src="{% static 'orders/orders.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
     <link rel="stylesheet" href="{% static 'orders/styles.css' %}"/>
   </head>
   <body>
@@ -15,7 +17,7 @@
       <a class="navbar-brand" href="{% url 'index' %}">Jiashan Pizza</a>
         <div class="navbar-nav">
           <a class="nav-item nav-link" href="{% url 'pizzas' %}">Pizzas</a>
-          <a class="nav-item nav-link" href="#">Subs</a>
+          <a class="nav-item nav-link" href="{% url 'subs' %}">Subs</a>
           <a class="nav-item nav-link" href="#">Italian Food</a>
           <a class="nav-item nav-link" href="#">For Dinner</a>
         </div>
@@ -25,8 +27,9 @@
           <a class="btn btn-sm btn-outline-secondary" href="{% url 'register' %}" type="button">Register</a>
         </form>
         {% else %}
-         <a class="nav-item nav-link ml-auto" href="{% url 'order' %}">My Order</a>
-         <a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}" type="button">Logout</a>
+          <a class="btn btn-success fas fa-shopping-basket ml-auto" href="{% url 'checkout' %}"type="button"></a>
+          <a id="orderCLick" class="nav-item nav-link" href="">My Order</a>
+          <a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}" type="button">Logout</a>
         {% endif %}
     </nav>
         {% block body %}

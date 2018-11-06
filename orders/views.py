@@ -1,10 +1,11 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.http.request import HttpRequest, QueryDict
+from django.shortcuts import render, render_to_response
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
-from .models import Pizza, Order, Topping
-
+from .models import Pizza, Order, Topping, Sub
+import json
 
 # Create your views here.
 def index(request):
@@ -12,6 +13,12 @@ def index(request):
     "user": request.user
     }
     return render(request, "orders/index.html", context)
+
+def checkout(request):
+    context = {
+    "user": request.user
+    }
+    return render(request, "orders/checkout.html", context)
 
 def register(request):
     if request.method == "POST":
@@ -43,12 +50,15 @@ def logout_view(request):
     return HttpResponseRedirect(reverse("index"))
 
 def order_view(request):
-    try:
-        order = Order.objects.all()
-    except:
-        message = "You do not have any order yet"
+    if request.method == "POST":
+        global data
+        data = json.loads(request.body)
+    context = {
+    "user": request.user,
+    "test": data
+    }
+    return render(request, "orders/order.html", context)
 
-    return render(request, "orders/order.html")
 
 def pizzas(request):
     pizza = Pizza.objects.all()
@@ -59,3 +69,11 @@ def pizzas(request):
     "topping" : topping,
     }
     return render(request, "orders/pizzas.html", context)
+
+def subs(request):
+    subs = Sub.objects.all()
+    context = {
+    "user": request.user,
+    "subs": subs,
+    }
+    return render(request, "orders/subs.html", context)

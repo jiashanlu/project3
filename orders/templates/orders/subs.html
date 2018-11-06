@@ -1,0 +1,35 @@
+{% extends "orders/base.html" %}
+
+{% block title %}
+    Subs
+{% endblock %}
+
+{% block body %}
+<div class="container text-center">
+  <div class="row justify-content-center margin-top">
+    <div class="col-4">
+      <h2>Subs Menu</h2>
+      <h4 class="lead">You want more?</h4>
+    </div>
+  </div>
+  <div class="row">
+    {% regroup subs|dictsortreversed:"size" by size as size_list %}
+    {% for si in size_list %}
+    <div class="col">
+      <p class="lead">{{si.grouper}}</p>
+      <dl class="text-center Capitalize">
+        {% for s in si.list%}
+        {% if s.subofsub%}
+        <dd class="item">{{ s.subofsub }} added to {{ s.name }} <a href="#" data-order='{"ID":"{{s.id}}", "size":"{{s.size}}", "name":"{{s.name}}", "subofsub":"{{s.subofsub}}", "price":{{s.price}}}' class="fas fa-cart-arrow-down subs-order">${{s.price}}</a></dd>
+        {% else %}
+        <dd class="item">{{ s.name }}<a href="#" data-order='{"ID":"{{s.id}}", "size":"{{s.size}}", "name":"{{s.name}}", "subofsub":"{{s.subofsub}}", "price":{{s.price}}}' class="fas fa-cart-arrow-down subs-order">${{s.price}}</a></dd>
+        {% endif %}
+        {% endfor %}
+
+      </dl>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

@@ -12,12 +12,12 @@ class Topping (models.Model):
 class Sub (models.Model):
     name = models.CharField(max_length=64)
     subofsub = models.CharField(max_length=64, blank=True)
-    size = models.CharField(max_length=5)
+    size = models.CharField(max_length=5, blank=True)
     price = models.DecimalField(max_digits=5, decimal_places=2)
 
     def __str__(self):
         if self.subofsub == "":
-            return f"{self.name}, {self.size}, {self.price}"
+            return f"{self.name}, ${self.price}"
         return f"{self.subofsub} addded to {self.name}, {self.price}"
 
 class Pizza(models.Model):
