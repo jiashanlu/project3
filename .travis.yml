@@ -4,9 +4,18 @@ python:
     - 3.6
 services:
     - docker
+    - postgresql
 before_install:
     - docker build -t orders .
+env:
+  global:
+    - DB_NAME=postgres
+    - DB_USER=postgres
+    - DB_HOST=db
+    - DB_PORT=5432
 install:
     - pip install -r requirements.txt
+before_script:
+    - psql -c 'create database postgres;' -U postgres
 script:
     - python manage.py test
