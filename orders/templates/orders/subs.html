@@ -20,9 +20,9 @@
       <dl class="text-center Capitalize">
         {% for s in si.list%}
         {% if s.subofsub%}
-        <dd class="item">{{ s.subofsub }} added to {{ s.name }} <a href="#" data-order='{"ID":"{{s.id}}", "size":"{{s.size}}", "name":"{{s.name}}", "subofsub":"{{s.subofsub}}", "price":{{s.price}}}' class="fas fa-cart-arrow-down subs-order">${{s.price}}</a></dd>
+        <dd class="item">{{ s.subofsub }} added to {{ s.name }} <a href="#" data-type='sub' data-order='{"ID":"{{s.id}}", "size":"{{s.size}}", "name":"{{s.name}}", "subofsub":"{{s.subofsub}}", "price":{{s.price}}}' class="fas fa-cart-arrow-down new-order">${{s.price}}</a></dd>
         {% else %}
-        <dd class="item">{{ s.name }}<a href="#" data-order='{"ID":"{{s.id}}", "size":"{{s.size}}", "name":"{{s.name}}", "subofsub":"{{s.subofsub}}", "price":{{s.price}}}' class="fas fa-cart-arrow-down subs-order">${{s.price}}</a></dd>
+        <dd class="item">{{ s.name }}<a href="#" data-type='sub' data-order='{"ID":"{{s.id}}", "size":"{{s.size}}", "name":"{{s.name}}", "subofsub":"{{s.subofsub}}", "price":{{s.price}}}' class="fas fa-cart-arrow-down new-order">${{s.price}}</a></dd>
         {% endif %}
         {% endfor %}
 

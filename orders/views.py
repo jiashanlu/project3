@@ -4,8 +4,9 @@ from django.shortcuts import render, render_to_response
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
-from .models import Pizza, Order, Topping, Sub
+from .models import *
 import json
+import pdb
 
 # Create your views here.
 def index(request):
@@ -14,7 +15,45 @@ def index(request):
     }
     return render(request, "orders/index.html", context)
 
+def ordered(request):
+    data = Order.objects.filter(customer=request.user)
+    context = {
+    "data": data,
+    "user": request.user
+    }
+    return render(request, "orders/order.html", context)
+
 def checkout(request):
+    if request.method == "POST":
+        #pdb.set_trace()
+        data = json.loads(request.body)
+        O = Order.objects.create(customer=request.user) #create object with user
+        for piz in data['pizza']:
+            pizza=Pizza.objects.get(id=piz['pizza']['ID'])
+            topp=[]
+            for top in piz['topping']:
+                topp.append(Topping.objects.get(pk=top['ID']))
+            P = OrderPizza.objects.create(pizza=pizza)
+            P.topping.set(topp)
+            O.orderpizza_set.add(P)
+        for pas in data['pasta']:
+            pasta= Pasta.objects.get(id=pas['ID'])
+            P = OrderPasta.objects.create(pasta=pasta)
+            O.orderpasta_set.add(P)
+        for sal in data['salad']:
+            salad= Salad.objects.get(id=sal['ID'])
+            P = OrderSalad.objects.create(salad=salad)
+            O.ordersalad_set.add(P)
+        for din in data['dinner']:
+            dinner= DinnerPlatter.objects.get(id=din['ID'])
+            P = OrderDinner.objects.create(dinner=dinner)
+            O.orderdinner_set.add(P)
+        for su in data['sub']:
+            sub= Sub.objects.get(id=su['ID'])
+            P = OrderSub.objects.create(sub=sub)
+            O.ordersub_set.add(P)
+        O.total = data["total"]
+        O.save()
     context = {
     "user": request.user
     }
@@ -50,9 +89,6 @@ def logout_view(request):
     return HttpResponseRedirect(reverse("index"))
 
 def order_view(request):
-    if request.method == "POST":
-        global data
-        data = json.loads(request.body)
     context = {
     "user": request.user,
     "test": data
@@ -77,3 +113,21 @@ def subs(request):
     "subs": subs,
     }
     return render(request, "orders/subs.html", context)
+
+def italian(request):
+    pasta = Pasta.objects.all()
+    salad = Salad.objects.all()
+    context = {
+    "user": request.user,
+    "pasta": pasta,
+    "salad": salad,
+    }
+    return render(request, "orders/italian.html", context)
+
+def dinner(request):
+    dinner = DinnerPlatter.objects.all()
+    context = {
+    "user": request.user,
+    "dinner": dinner,
+    }
+    return render(request, "orders/dinner.html", context)

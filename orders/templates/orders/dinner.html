@@ -1,0 +1,31 @@
+{% extends "orders/base.html" %}
+
+{% block title %}
+    Dinner
+{% endblock %}
+
+{% block body %}
+<div class="container text-center">
+  <div class="row justify-content-center margin-top">
+    <div class="col-4">
+      <h2>Dinner Menu</h2>
+      <h4 class="lead">For serious people only</h4>
+    </div>
+  </div>
+  <div class="row">
+    {% regroup dinner|dictsortreversed:"size" by size as size_list %}
+    {% for si in size_list %}
+    <div class="col">
+      <p class="lead">{{si.grouper}}</p>
+      <dl class="text-center Capitalize">
+        {% for s in si.list%}
+        <dd class="item">{{ s.name }}<a href="#" data-type='dinner' data-order='{"ID":"{{s.id}}", "size":"{{s.size}}", "name":"{{s.name}}", "subofsub":"{{s.subofsub}}", "price":{{s.price}}}' class="fas fa-cart-arrow-down new-order">${{s.price}}</a></dd>
+        {% endfor %}
+
+      </dl>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

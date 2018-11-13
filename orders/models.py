@@ -26,8 +26,8 @@ class Pizza(models.Model):
     size = models.CharField(max_length=5)
     price = models.DecimalField(max_digits=5, decimal_places=2)
 
-#    def __str__(self):
-#        return {'type':{self.type}, 'kind':{self.kind}, 'size':{self.size},'price': {self.price}}"
+    def __str__(self):
+        return f"'type':{self.type}, 'kind':{self.kind}, 'size':{self.size},'price': {self.price}"
 
 class Pasta (models.Model):
     name = models.CharField(max_length=64)
@@ -53,9 +53,48 @@ class DinnerPlatter (models.Model):
 
 class Order (models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="customer")
-    pizza = models.ManyToManyField(Pizza, blank=True, related_name="pizza")
+    pizza = models.ManyToManyField(Pizza, blank=True, through="OrderPizza", related_name="pizza")
+    sub = models.ManyToManyField(Sub, blank=True, through="OrderSub", related_name="sub")
+    pasta = models.ManyToManyField(Pasta, blank=True, through="OrderPasta", related_name="pasta")
+    salad = models.ManyToManyField(Salad, blank=True, through="OrderSalad", related_name="salad")
+    dinner = models.ManyToManyField(DinnerPlatter, blank=True, through="OrderDinner", related_name="diner")
+    total = models.DecimalField(max_digits=5, blank=True, null=True, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.customer}, {self.id}"
+
+class OrderPizza (models.Model):
+    order = models.ForeignKey(Order, null=True, on_delete=models.CASCADE)
+    pizza = models.ForeignKey(Pizza, blank=True, null=True, on_delete=models.CASCADE)
     topping = models.ManyToManyField(Topping, blank=True, related_name="topping")
-    sub = models.ManyToManyField(Sub, blank=True, related_name="sub")
-    pasta = models.ManyToManyField(Pasta, blank=True, related_name="pasta")
-    salad = models.ManyToManyField(Salad, blank=True, related_name="salad")
-    dinner = models.ManyToManyField(DinnerPlatter, blank=True, related_name="diner")
+
+    def __str__(self):
+        return f"{self.pizza}"
+
+class OrderPasta (models.Model):
+    order = models.ForeignKey(Order, null=True, on_delete=models.CASCADE)
+    pasta = models.ForeignKey(Pasta, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.pasta}"
+
+class OrderSub (models.Model):
+    order = models.ForeignKey(Order, null=True, on_delete=models.CASCADE)
+    sub = models.ForeignKey(Sub, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.sub}"
+
+class OrderSalad (models.Model):
+    order = models.ForeignKey(Order, null=True, on_delete=models.CASCADE)
+    salad = models.ForeignKey(Salad, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.salad}"
+
+class OrderDinner (models.Model):
+    order = models.ForeignKey(Order, null=True, on_delete=models.CASCADE)
+    dinner = models.ForeignKey(DinnerPlatter, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.dinner}"

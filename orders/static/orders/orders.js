@@ -1,13 +1,12 @@
   // variables
-var orderList = {"pizza":[],"sub":[],"pasta":[],"salad":[],"dinner":[]}; // track order
+var orderList = {"pizza":[],"sub":[],"pasta":[],"salad":[],"dinner":[],"total":0}; // track order
 var orderPizza = {}; // pizza object
 var orderSubs = {}; // subs object
 var orderTopp = []; //track Topp selected
 var topp = {}; //topp object
 var selected = {'link_pizza':undefined, 'selected':false, 'nbr':0, 'link_subb': [], 'nbr_sel':0}; // track if pizza is selected and nbr of topp authorized
-
+var total = 0;
   //functions
-
 function hide(x){
   document.querySelectorAll(x).forEach(element => {
     element.style.visibility = 'hidden';
@@ -129,7 +128,7 @@ function loadOrderPizza(data){
         li.innerHTML += ")";
       }
     li.innerHTML += ` $ : ${data.pizza[i].pizza.price}`;
-    var total =+ data.pizza[i].pizza.price;
+    total = total + data.pizza[i].pizza.price;
     let a = document.createElement('a');
     a.innerHTML = '<a href="#" class="fas fa-minus topp-button add-topp rem" style=""></a>'
     li.append(a);
@@ -137,9 +136,26 @@ function loadOrderPizza(data){
   };
 
 }
-function deleteOrderPizza(i){
+function deleteOrder(i){
   let data = JSON.parse(localStorage.getItem("orderList"));
-  data.pizza.splice(i,1);
+  var t =0;
+  for (var y=0; y<Object.keys(data).length; y++){ //value of object.length is 5
+    var t = t + data[Object.keys(data)[y]].length; //increment t
+    if (t >= i) {
+      var type = Object.keys(data)[y];
+      var x = data[Object.keys(data)[y]].length-(t-i+1);
+      if (type == "pizza"){
+        total = total - data.pizza[x].pizza.price;
+        loadTotal();
+      }
+      else if (type != "pizza"){
+        total = total - data[type][x].price;
+        loadTotal();
+      };
+      data[type].splice(x,1);
+      break;
+    };
+  };
   localStorage.setItem("orderList", JSON.stringify(data));
 }
 function add_element_basket(type, data){
@@ -154,23 +170,40 @@ function add_element_basket(type, data){
     orderToBeStored = orderList;
   }
   localStorage.setItem("orderList",JSON.stringify(orderToBeStored));
-  orderList = {"pizza":[],"sub":[],"pasta":[],"salad":[],"dinner":[]};
-}
+  orderList = {"pizza":[],"sub":[],"pasta":[],"salad":[],"dinner":[],"total":0};
+};
 function loadOrder(type,data){
   for (var i=0; i<(data[type].length); i++){
     let li = document.createElement('li');
-    li.innerHTML = `Sub : ${data[type][i].name}, ${data[type][i].size}, ${data[type][i].price}`;
+    li.innerHTML = `${type} : ${data[type][i].name}, ${data[type][i].size}, $: ${data[type][i].price}`;
     if (data[type][i].subofsub != ""){
-      li = document.createElement('li');
-      li.innerHTML = `${data[type][i].subofsub} added to ${data[type][i].name}, ${data[type][i].price}`;
+      li.innerHTML = `${data[type][i].subofsub} added to ${data[type][i].name}, $: ${data[type][i].price}`;
     };
-    var total =+ data[type][i].price;
+    if (type == "salad" || type == "pasta"){
+      li.innerHTML = `${type} : ${data[type][i].name}, $: ${data[type][i].price}`;
+    };
+    total = total + data[type][i].price;
     let a = document.createElement('a');
-    a.innerHTML = '<a href="#" class="fas fa-minus topp-button add-topp rem" style=""></a>'
+    a.innerHTML = '<a href="#" class="fas fa-minus topp-button add-topp rem" style=""></a>';
     li.append(a);
     document.querySelector("#Checkout").append(li);
   };
+}
+function loadTotal(){
+  document.querySelector('#total').innerHTML = `Total order : $: ${total}`;
+}
+function loadDB(){
+  const request = new XMLHttpRequest();
+  request.open("POST", "/checkout",false);
+  request.setRequestHeader("X-CSRFToken", Cookies.get('csrftoken'));
+  request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded, charset=utf-8");
+  request.send(localStorage.getItem("orderList"));
+  request.onreadystatechange  =() => {
+    if (request.readyState==4 && request.status==200)
+    request.close();
+  };
 };
+// on pages
 if (document.title=="Pizzas" ){ //on pizza page
   document.addEventListener('DOMContentLoaded', () => {
     hide('.hide'); hide('.hide3'); //initial state
@@ -199,7 +232,6 @@ if (document.title=="Pizzas" ){ //on pizza page
       };
     });
     document.querySelector('#pizza-order').onclick = () => {
-      debugger;
       orderList.pizza.push({"pizza":orderPizza,"topping":[]}); //add in orderLIst
       var orderToBeStored = {};
       var i=orderList.pizza.length-1;
@@ -217,60 +249,50 @@ if (document.title=="Pizzas" ){ //on pizza page
       localStorage.setItem("orderList",JSON.stringify(orderToBeStored));
       remove_topp_all();
       remove_pizza_all(selected.link_pizza);
-      orderList = {"pizza":[],"sub":[],"pasta":[],"salad":[],"dinnner":[]};
+      orderList = {"pizza":[],"sub":[],"pasta":[],"salad":[],"dinner":[],"total":0};
       selected = {'link_pizza':undefined, 'selected':false, 'nbr':0, 'link_subb': [], 'nbr_sel':0};
     };
   });
 };
-
 if (document.title=="Checkout"){ //on checkout page
   document.addEventListener('DOMContentLoaded', () => {// on DOM loaded
-    let data = JSON.parse(localStorage.getItem("orderList")); //load data
+    hide(".hide");
+    if (localStorage.getItem("orderList")=="")
+      return
+    var data = JSON.parse(localStorage.getItem("orderList")); //load data
+    total = 0;
     loadOrderPizza(data);// display order list for pizza
-    loadOrder("sub",data);// display order list for others
+    loadOrder("sub",data);
+    loadOrder("pasta",data);
+    loadOrder("salad",data);
+    loadOrder("dinner",data);
     $(".rem").on('click', function(event){
       for (var i=0; i< document.querySelector("#Checkout").childElementCount ;i++){
         if ((this).closest("li") == document.querySelector("#Checkout").children[i])
-          deleteOrderPizza(i); //delete pizza from order
+          deleteOrder(i+1); //delete pizza from order
       }
     $(this).closest("li").remove(); //delete display
     });
-    // document.querySelectorAll('.rem').forEach(link => {
-    //   link.onclik = () => {
-    //     debugger;
-    //     let itemNbr= (data.pizza.length + data.sub.length + data.pasta.length + data.salad.length +data.dinner.length);
-    //     link.parentElement.remove();
-    //   //  for (var i=o;i<itemNbr; i++){
-    //   //    removeFromBasket(i);
-    //   //  };
+    loadTotal();
+    if (document.querySelector("#Checkout").childElementCount>0)
+      unhide('.hide')
+    document.querySelector('#confirm-checkout').onclick = () => {
+      var data = JSON.parse(localStorage.getItem("orderList"));
+      data.total=total;
+      localStorage.setItem("orderList",JSON.stringify(data));
+      loadDB();
+      localStorage.setItem("orderList","");
+    };
   });
 };
-if (document.title=="Subs"){ // on sub page
+if (document.title=="Subs" || document.title=="Italian" || document.title=="Dinner"){ // on other menu page
   document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.subs-order').forEach(link => {
+    document.querySelectorAll('.new-order').forEach(link => {
       link.onclick = () => {
         orderSubs = link.dataset.order;
-        var type = "sub";
+        var type = link.dataset.type;
         add_element_basket(type, orderSubs);
       };
     });
   });
 };
-
-// document.addEventListener('DOMContentLoaded', () => {
-//   // function loadOrder(){
-//   //   const request = new XMLHttpRequest();
-//   //   request.open("POST", "/order",true);
-//   //   request.setRequestHeader("X-CSRFToken", Cookies.get('csrftoken'));
-//   //   request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded, charset=utf-8");
-//   //   request.send(localStorage.getItem("orderList"));
-//   //   request.onreadystatechange  =() => {
-//   //     if (request.readyState==4 && request.status==200)
-//   //       window.location = 'order'
-//   //   }
-//   // };
-//   document.querySelector('#orderCLick').onclick = () => {
-//     loadOrder();
-//     return false;
-//   };
-// });

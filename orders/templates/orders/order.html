@@ -7,9 +7,14 @@
 <div id="Order"></div>
 
 {% block body %}
-<P><a  id="test" href="#" class="fas fa-cart-arrow-down"></a></p>
-{{ test.pizza }}
+<ul>
+  {%for Order in data%}
+  <li>
+    {{Order}}
+  </li>
 
+  {% endfor %}
+</ul>
 
 
 {% endblock %}

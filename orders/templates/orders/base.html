@@ -18,8 +18,8 @@
         <div class="navbar-nav">
           <a class="nav-item nav-link" href="{% url 'pizzas' %}">Pizzas</a>
           <a class="nav-item nav-link" href="{% url 'subs' %}">Subs</a>
-          <a class="nav-item nav-link" href="#">Italian Food</a>
-          <a class="nav-item nav-link" href="#">For Dinner</a>
+          <a class="nav-item nav-link" href="{% url 'italian' %}">Italian Food</a>
+          <a class="nav-item nav-link" href="{% url 'dinner' %}">For Dinner</a>
         </div>
         {% if not user.is_authenticated %}
         <form class="form-inline ml-auto">
@@ -28,7 +28,7 @@
         </form>
         {% else %}
           <a class="btn btn-success fas fa-shopping-basket ml-auto" href="{% url 'checkout' %}"type="button"></a>
-          <a id="orderCLick" class="nav-item nav-link" href="">My Order</a>
+          <a id="orderCLick" class="nav-item nav-link" href="{% url 'ordered' %}">My Order</a>
           <a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}" type="button">Logout</a>
         {% endif %}
     </nav>
