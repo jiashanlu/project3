@@ -192,9 +192,6 @@ function loadOrder(type,data){
 function loadTotal(){
   document.querySelector('#total').innerHTML = `Total order : $: ${total}`;
 }
-function pay(){
-
-}
 // on pages
 if (document.title=="Pizzas" ){ //on pizza page
   document.addEventListener('DOMContentLoaded', () => {
