@@ -6,3 +6,7 @@ This web app allow the user to select all the items menu of the restaurant. This
 --> administrator can modify the menu and have access to orders.
 
 My personal touch was to add stipe payment.
+
+admin user and password :
+usr : cs50
+psw : admincs50
