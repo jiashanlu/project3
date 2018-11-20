@@ -192,17 +192,9 @@ function loadOrder(type,data){
 function loadTotal(){
   document.querySelector('#total').innerHTML = `Total order : $: ${total}`;
 }
-function loadDB(){
-  const request = new XMLHttpRequest();
-  request.open("POST", "/checkout",false);
-  request.setRequestHeader("X-CSRFToken", Cookies.get('csrftoken'));
-  request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded, charset=utf-8");
-  request.send(localStorage.getItem("orderList"));
-  request.onreadystatechange  =() => {
-    if (request.readyState==4 && request.status==200)
-    request.close();
-  };
-};
+function pay(){
+
+}
 // on pages
 if (document.title=="Pizzas" ){ //on pizza page
   document.addEventListener('DOMContentLoaded', () => {
@@ -276,11 +268,30 @@ if (document.title=="Checkout"){ //on checkout page
     loadTotal();
     if (document.querySelector("#Checkout").childElementCount>0)
       unhide('.hide')
-    document.querySelector('#confirm-checkout').onclick = () => {
+    var handler = StripeCheckout.configure({
+      key: 'pk_test_WUmBD14Gz3VhhEXMPm4IZebn',
+      image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+      locale: 'auto',
+      token: function(token) {
+        document.querySelector("#stripeToken").value = token.id;
+        document.querySelector("#stripeEmail").value = token.email;
+        document.querySelector("#payment-form").submit();
+      }
+    });
+    document.querySelector('#confirm-checkout').onclick = e => {
       var data = JSON.parse(localStorage.getItem("orderList"));
       data.total=total;
       localStorage.setItem("orderList",JSON.stringify(data));
-      loadDB();
+      document.querySelector('#data').value = localStorage.getItem("orderList");
+      var amountInCents = Math.floor($("#amountInDollars").val() * 100);
+      var displayAmount = parseFloat(Math.floor($("#amountInDollars").val() * 100) / 100).toFixed(2);
+      // Open Checkout with further options
+      handler.open({
+        name: 'Jiashan Pizza',
+        description: 'Many thanks',
+        amount: total*100,
+      });
+      e.preventDefault();
       localStorage.setItem("orderList","");
     };
   });

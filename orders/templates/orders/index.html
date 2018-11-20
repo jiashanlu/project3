@@ -1,4 +1,4 @@
-{% extends "orders/base.html" %}
+{% extends "orders/base.html" %}{% load static %}
 
 {% block title %}
     Jiashan Pizza
@@ -9,6 +9,7 @@
   <div class="row justify-content-md-center">
     <div class="col-6">
       <h4>Welcome <span class="Capitalize">{{ user.username }}</span>, what do you want to eat today?</h4>
+      <img class="img" src="{% static 'orders/img/pizza.jpg' %}" alt=""></img>
     </div>
   </div>
 

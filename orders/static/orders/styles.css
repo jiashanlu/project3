@@ -27,3 +27,9 @@
 line-height: 1em;
 background-color: lightgray;
 }
+
+.img{
+  width: 100%;
+  height: auto;
+  align-items: flex-start;
+}

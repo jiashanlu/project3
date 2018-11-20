@@ -7,7 +7,9 @@ from django.urls import reverse
 from .models import *
 import json
 import pdb
+import stripe
 
+stripe.api_key = "sk_test_EqFjnmGDUS4mc6nDl7DdtwIG"
 # Create your views here.
 def index(request):
     context = {
@@ -23,10 +25,10 @@ def ordered(request):
     }
     return render(request, "orders/order.html", context)
 
+
 def checkout(request):
     if request.method == "POST":
-        #pdb.set_trace()
-        data = json.loads(request.body)
+        data = json.loads(request.POST['data'])
         O = Order.objects.create(customer=request.user) #create object with user
         for piz in data['pizza']:
             pizza=Pizza.objects.get(id=piz['pizza']['ID'])
@@ -54,6 +56,13 @@ def checkout(request):
             O.ordersub_set.add(P)
         O.total = data["total"]
         O.save()
+        token = request.POST['stripeToken']
+        charge = stripe.Charge.create(
+            amount= int(data["total"]*100),
+            currency='usd',
+            description='test',
+            source=token,
+)
     context = {
     "user": request.user
     }

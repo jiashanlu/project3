@@ -3,12 +3,20 @@
 {% block title %}
     Checkout
 {% endblock %}
-{% csrf_token %}
 
 
 {% block body %}
 <h4>Bellow is what you have in your basket so far:</h4>
 <ul id="Checkout"></ul>
 <h5 id="total" class="hide"></h5>
-<a id="confirm-checkout" class="btn btn-sm btn-outline-primary hide" href="" type="button">Confirm & Order</a>
+<!-- <a id="confirm-checkout" class="btn btn-sm btn-outline-primary hide" href="" type="button">Confirm & Order</a> -->
+
+<form id="payment-form" action="{% url 'checkout' %}" method="POST">
+  {% csrf_token %}
+  <input type="hidden" id="stripeToken" name="stripeToken" value:"" />
+  <input type="hidden" id="stripeEmail" name="stripeEmail" value:"" />
+  <input type="hidden" id="data" name="data" value:"" />
+</form>
+<input type="button" id="confirm-checkout" class="btn btn-sm btn-outline-primary hide" value="Confirm & Pay">
+
 {% endblock %}
